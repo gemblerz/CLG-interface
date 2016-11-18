@@ -12,7 +12,6 @@ a = b = 0
 
 order = 0
 cho_keymap = {
-	'' : 0,
 	'r' : 0,
 	'R' : 1,
 	's' : 2,
@@ -90,6 +89,12 @@ jong_keymap = {
 }
 
 entry = [cho_keymap, jung_keymap, jong_keymap]
+jaum = ['q', 'Q', 'w', 'W', 'e', 'E', 'r', 'R', 't', 'T',
+		'a', 's', 'd', 'f',
+		'z', 'x', 'c', 'v']
+
+moum = ['k', 'i', 'j', 'u', 'h', 'y', 'n', 'b', 'm', 'l', 'o', 'p',
+		'ho', 'hp', 'nj']
 
 class answk(object):
 	def __init__(self, space = -1):
@@ -140,11 +145,15 @@ class answk(object):
 	def cnffur(self):
 		if self.space > 0:
 			return chr(32)
-
-		i = cho_keymap[self.jamo[0]]
-		m = jung_keymap[self.jamo[1]]
-		f = jong_keymap[self.jamo[2]]
-		han = (((i)*588)+((m)*28)+(f))+44032
+		han = 0
+		try:
+			i = cho_keymap[self.jamo[0]]
+			m = jung_keymap[self.jamo[1]]
+			f = jong_keymap[self.jamo[2]]
+			han = (((i)*588)+((m)*28)+(f))+44032
+		except Exception as e:
+			# print("%s %s %s haha" % (self.jamo[0], self.jamo[1], self.jamo[2]))
+			return ""
 		return chr(han)
 
 	def __str__(self):
@@ -278,7 +287,9 @@ class korchat(object):
 
 			result = ""
 			for gkswk in hangul:
-				result += gkswk.cnffur()
+				rmfwk = gkswk.cnffur()
+				if rmfwk != "":
+					result += rmfwk
 			if fail_cnt < 0:
 				result = "ERROR: COULD NOT INTERPRET"
 			self.chat_list.append([result, self.ID])
